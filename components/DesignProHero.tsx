@@ -15,7 +15,7 @@ const scoutLinks = [
   { label: "FAQ", href: "#faq" },
 ];
 
-const playerLinks = [{ label: "Анкета игрока", href: "#players" }];
+const playerLinks: { label: string; href: string }[] = [];
 
 type Role = "scout" | "player";
 
@@ -23,20 +23,23 @@ function RoleToggle({
   role,
   onRoleChange,
   full = false,
+  compact = false,
 }: {
   role: Role;
   onRoleChange: (role: Role) => void;
   full?: boolean;
+  compact?: boolean;
 }) {
-  const base =
-    "rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 sm:px-5";
+  const base = compact
+    ? "rounded-full px-3.5 py-1.5 text-sm font-medium transition-all duration-300"
+    : "rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 sm:px-5";
   const active =
     "bg-white/15 text-white shadow-[0_4px_16px_-6px_rgba(0,0,0,0.6)] ring-1 ring-white/20";
   const idle = "text-white/70 hover:text-white";
 
   return (
     <div
-      className={`inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.06] p-1 backdrop-blur-xl ${
+      className={`inline-flex items-center gap-1 rounded-full border border-gray-700 bg-black/30 p-1 backdrop-blur-md ${
         full ? "w-full" : ""
       }`}
       role="tablist"
@@ -75,6 +78,21 @@ type Props = {
 
 export default function DesignProHero({ role, onRoleChange }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [toggleShown, setToggleShown] = useState(false);
+
+  // Header gets a glass background while scrolled; the toggle, once revealed,
+  // stays visible permanently (latched).
+  useEffect(() => {
+    const onScroll = () => {
+      const past = window.scrollY > window.innerHeight * 0.3;
+      setScrolled(past);
+      if (past) setToggleShown(true);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Lock body scroll while the mobile menu is open.
   useEffect(() => {
@@ -93,60 +111,81 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
   const pillCta =
     role === "scout"
       ? { label: "Попробовать", href: "#pricing" }
-      : { label: "Заполнить анкету", href: "#players" };
+      : { label: "Заполнить анкету игрока", href: "#players" };
 
   return (
     <>
       {/* Fixed (pinned) header — stays on top across the whole page */}
-      <header className="fixed inset-x-0 top-0 z-50">
-        <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 sm:px-6 sm:py-5 lg:px-8">
-          {/* Logo */}
-          <a
-            href="#"
-            className="rise flex items-center gap-2.5 sm:gap-3"
-            style={{ animationDelay: "0.05s" }}
-            onClick={() => setMenuOpen(false)}
-          >
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white">
-              <span className="h-2.5 w-2.5 rounded-full bg-white" />
-            </span>
-            <span className="text-base font-semibold text-white">ScoutScope</span>
-          </a>
-
-          {/* Desktop nav pill */}
-          <div
-            className="rise hidden items-center rounded-full border border-gray-700 bg-black/30 px-2 py-1 backdrop-blur-md lg:flex"
-            style={{ animationDelay: "0.15s" }}
-          >
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
-              >
-                {link.label}
-              </a>
-            ))}
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+          scrolled ? "border-b border-white/10 bg-black/50 backdrop-blur-md" : ""
+        }`}
+      >
+        <nav className="relative mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 sm:px-6 sm:py-5 lg:px-8">
+          {/* Left: logo + toggle (toggle appears on scroll, position is
+              independent of the nav pill so it never shifts when the role changes) */}
+          <div className="flex items-center gap-3 lg:gap-4">
             <a
-              href={pillCta.href}
-              className="flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
+              href="#"
+              className="rise flex items-center gap-2.5 sm:gap-3"
+              style={{ animationDelay: "0.05s" }}
+              onClick={() => setMenuOpen(false)}
             >
-              {pillCta.label}
-              <ArrowUpRight className="h-4 w-4" />
+              <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white">
+                <span className="h-2.5 w-2.5 rounded-full bg-white" />
+              </span>
+              <span className="text-base font-semibold text-white">ScoutScope</span>
             </a>
+
+            {/* Toggle — desktop, fades/slides in on scroll */}
+            <div
+              className={`hidden transition-all duration-500 lg:block ${
+                toggleShown
+                  ? "pointer-events-auto translate-y-0 opacity-100"
+                  : "pointer-events-none -translate-y-2 opacity-0"
+              }`}
+            >
+              <RoleToggle role={role} onRoleChange={onRoleChange} compact />
+            </div>
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
-            className="rise relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-gray-700 bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-white/10 lg:hidden"
-            style={{ animationDelay: "0.15s" }}
-          >
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          {/* Right: nav pill + burger */}
+          <div className="flex items-center gap-3">
+            {/* Desktop nav pill */}
+            <div
+              className="rise hidden items-center rounded-full border border-gray-700 bg-black/30 px-2 py-1 backdrop-blur-md lg:flex"
+              style={{ animationDelay: "0.15s" }}
+            >
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ))}
+              <a
+                href={pillCta.href}
+                className="flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
+              >
+                {pillCta.label}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            </div>
+
+            {/* Mobile hamburger */}
+            <button
+              type="button"
+              aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((v) => !v)}
+              className="rise relative z-50 flex h-11 w-11 items-center justify-center rounded-full border border-gray-700 bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-white/10 lg:hidden"
+              style={{ animationDelay: "0.15s" }}
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </nav>
       </header>
 
@@ -224,12 +263,8 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
 
           {/* Center hero */}
           <div className="order-1 mx-auto flex w-full max-w-7xl flex-none flex-col items-center justify-center px-5 py-6 text-center sm:px-6 lg:order-2 lg:flex-1 lg:py-10 lg:px-8">
-            <div className="rise" style={{ animationDelay: "0.34s" }}>
-              <RoleToggle role={role} onRoleChange={onRoleChange} />
-            </div>
-
             <p
-              className="rise mt-6 text-[11px] uppercase tracking-tight text-white/80 sm:text-xs md:text-sm"
+              className="rise text-[11px] uppercase tracking-tight text-white/80 sm:text-xs md:text-sm"
               style={{ animationDelay: "0.4s" }}
             >
               AI-скаутинг киберспортивных талантов
