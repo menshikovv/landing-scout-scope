@@ -47,7 +47,7 @@ export default function Hero() {
               className="rise mt-5 max-w-xl text-base leading-relaxed text-[var(--color-text)]/80 md:text-lg"
               style={{ animationDelay: "0.28s" }}
             >
-              AI-платформа для поиска и оценки киберспортивных талантов —
+              Инновационная платформа для поиска и оценки киберспортивных талантов —
               автоматизируйте скаутинг и формируйте базу за минуты.
             </p>
 

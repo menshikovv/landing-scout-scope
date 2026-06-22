@@ -15,24 +15,24 @@ export default function Problem() {
     <section id="problem" className="relative overflow-hidden py-20 md:py-28">
       <div className="glow-blue pointer-events-none absolute -left-40 top-20 h-[420px] w-[420px] opacity-60" />
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
-        <div className="grid items-start gap-12 lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="grid items-start gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12">
           {/* Left: heading + big stat */}
           <div className="lg:sticky lg:top-28">
-            <h2 className="mt-5 font-display text-3xl font-extrabold leading-[1.1] md:text-[2.9rem]">
+            <h2 className="font-display text-2xl font-extrabold leading-[1.12] sm:text-3xl md:text-4xl lg:text-[2.9rem]">
               Почему традиционный скаутинг больше не работает
             </h2>
-            <p className="mt-5 max-w-md text-[var(--color-muted)]">
+            <p className="mt-4 max-w-md text-sm text-[var(--color-muted)] sm:text-base">
               Скауты и менеджеры тонут в ручной работе, которую давно можно
               автоматизировать.
             </p>
 
-            <div className="mt-8 overflow-hidden rounded-2xl border border-[var(--color-accent)]/30 bg-gradient-to-br from-[var(--color-accent)]/12 to-transparent p-6">
+            <div className="mt-6 overflow-hidden rounded-2xl border border-[var(--color-accent)]/30 bg-gradient-to-br from-[var(--color-accent)]/12 to-transparent p-5 sm:mt-8 sm:p-6">
               <div className="flex items-center gap-3 text-sm text-[var(--color-accent-2)]">
-                <Clock className="h-5 w-5" />
+                <Clock className="h-5 w-5 shrink-0" />
                 В среднем уходит на рутину
               </div>
               <div className="mt-2 flex items-end gap-3">
-                <span className="font-display text-5xl font-extrabold text-white md:text-6xl">
+                <span className="font-display text-[2.75rem] font-extrabold leading-none text-white sm:text-5xl md:text-6xl">
                   38<span className="text-[var(--color-accent-2)]">ч</span>
                 </span>
                 <span className="pb-2 text-sm text-[var(--color-muted)]">/ в неделю</span>
@@ -56,8 +56,10 @@ export default function Problem() {
                   <p.icon className="h-5 w-5" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="truncate text-[15px] font-medium">{p.text}</span>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="text-sm font-medium leading-snug sm:text-[15px]">
+                      {p.text}
+                    </span>
                     <span className="shrink-0 text-sm font-bold text-[var(--color-accent-2)]">
                       ~{p.hours}ч
                     </span>

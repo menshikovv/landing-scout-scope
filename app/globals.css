@@ -438,6 +438,20 @@ body.has-custom-cursor * {
   }
 }
 
+/* Simple fade-in (used by the mobile menu overlay) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.25s ease both;
+}
+
 /* Hero load-in (runs on first paint, staggered via inline delay) */
 @keyframes riseIn {
   from {

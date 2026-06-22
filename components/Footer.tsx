@@ -28,7 +28,7 @@ export default function Footer() {
               Scout<span className="text-[var(--color-accent-2)]">Scope</span>
             </a>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-[var(--color-muted)]">
-              AI-платформа для поиска и оценки киберспортивных талантов.
+              Инновационная платформа для поиска и оценки киберспортивных талантов.
               Скаутинг быстрее в 5 раз.
             </p>
             <a
