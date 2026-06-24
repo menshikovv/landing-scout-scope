@@ -263,8 +263,12 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
 
           {/* Center hero */}
           <div className="order-1 mx-auto flex w-full max-w-7xl flex-none flex-col items-center justify-center px-5 py-6 text-center sm:px-6 lg:order-2 lg:flex-1 lg:py-10 lg:px-8">
+            <div className="rise" style={{ animationDelay: "0.34s" }}>
+              <RoleToggle role={role} onRoleChange={onRoleChange} />
+            </div>
+
             <p
-              className="rise text-[11px] uppercase tracking-tight text-white/80 sm:text-xs md:text-sm"
+              className="rise mt-6 text-[11px] uppercase tracking-tight text-white/80 sm:text-xs md:text-sm"
               style={{ animationDelay: "0.4s" }}
             >
               AI-скаутинг киберспортивных талантов
