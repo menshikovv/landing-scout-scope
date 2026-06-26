@@ -165,13 +165,13 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
                   {link.label}
                 </a>
               ))}
-              <a
+              {/* <a
                 href={pillCta.href}
                 className="flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
               >
                 {pillCta.label}
                 <ArrowUpRight className="h-4 w-4" />
-              </a>
+              </a> */}
             </div>
 
             {/* Mobile hamburger */}
@@ -249,9 +249,9 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
               className="rise max-w-md text-sm text-white/80 md:text-base"
               style={{ animationDelay: "0.25s" }}
             >
-              Инновационная платформа для поиска и оценки киберспортивных
-              талантов — автоматизируйте скаутинг, сравнивайте кандидатов и
-              формируйте собственную базу за минуты.
+              Инновационная платформа для поиска киберспортивной
+              команды - заполни анкету, возглавь рейтинг талантов и ждди
+              приглашение от команды мечты
             </p>
             <p
               className="rise text-sm text-white/80 md:text-base lg:text-right"
@@ -271,22 +271,22 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
               className="rise mt-6 text-[11px] uppercase tracking-tight text-white/80 sm:text-xs md:text-sm"
               style={{ animationDelay: "0.4s" }}
             >
-              AI-скаутинг киберспортивных талантов
+              Инновационный скаутинг киберспортивных талантов
             </p>
 
             <h1 className="mt-4 font-medium leading-[0.9] tracking-tighter text-white sm:mt-5 sm:leading-[0.85]">
               <span
-                className="rise block text-[1.85rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
+                className="rise block text-[1.6rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
                 style={{ animationDelay: "0.5s" }}
               >
-                Находите будущих
+                Находите перспективные
               </span>
               <span
-                className="rise mt-1.5 block text-[1.85rem] sm:mt-2 sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl"
+                className="rise mt-1.5 block text-[1.6rem] sm:mt-2 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
                 style={{ animationDelay: "0.6s" }}
               >
                 <ShinyText
-                  text="чемпионов."
+                  text="команды."
                   baseColor="#64CEFB"
                   shineColor="#ffffff"
                   speed={3}

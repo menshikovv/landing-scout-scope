@@ -38,6 +38,113 @@ type Field = {
   required?: boolean;
 };
 
+type Prospect = {
+  rank: number;
+  player: string;
+  region: string;
+  elo: number;
+  talent: "S+" | "S" | "A+" | "A" | "B+";
+};
+
+const prospects: Prospect[] = [
+  { rank: 1, player: "aceShot", region: "EU", elo: 3420, talent: "S+" },
+  { rank: 2, player: "n0vaWolf", region: "CIS", elo: 3185, talent: "S" },
+  { rank: 3, player: "Kyrios", region: "NA", elo: 3040, talent: "S" },
+  { rank: 4, player: "zenith", region: "EU", elo: 2890, talent: "A+" },
+  { rank: 5, player: "m1raJ", region: "CIS", elo: 2760, talent: "A+" },
+  { rank: 6, player: "frostbyte", region: "SA", elo: 2615, talent: "A" },
+  { rank: 7, player: "vexPL", region: "EU", elo: 2480, talent: "B+" },
+];
+
+const talentStyles: Record<Prospect["talent"], string> = {
+  "S+": "bg-[#f59e0b]/15 text-[#fbbf24] ring-1 ring-[#f59e0b]/30",
+  S: "bg-[#34d399]/15 text-[#34d399] ring-1 ring-[#34d399]/30",
+  "A+": "bg-[#3b6ef6]/15 text-[#6b9bff] ring-1 ring-[#3b6ef6]/30",
+  A: "bg-[#6b9bff]/12 text-[#6b9bff] ring-1 ring-[#6b9bff]/25",
+  "B+": "bg-white/8 text-[var(--color-muted)] ring-1 ring-white/10",
+};
+
+function ProspectsTable() {
+  return (
+    <section className="relative overflow-hidden pt-20 md:pt-28">
+      <div className="relative mx-auto max-w-6xl px-5 md:px-8">
+        <div className="max-w-2xl">
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--color-accent-2)]">
+            Топ перспективных игроков
+          </span>
+          <h2 className="mt-3 font-display text-3xl font-extrabold md:text-5xl">
+            Рейтинг талантов <span className="text-grad">ScoutScope</span>
+          </h2>
+          <p className="mt-4 text-[var(--color-muted)]">
+            Так скауты видят базу: игроки, отранжированные по ELO и оценке
+            потенциала. Попади в базу — и окажешься в этом списке.
+          </p>
+        </div>
+
+        <div className="card mt-8 overflow-hidden p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[var(--color-border)] text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]">
+                  <th className="px-5 py-4 md:px-6">Ранг</th>
+                  <th className="px-5 py-4 md:px-6">Игрок</th>
+                  <th className="px-5 py-4 text-right md:px-6">ELO</th>
+                  <th className="px-5 py-4 text-right md:px-6">Уровень таланта</th>
+                </tr>
+              </thead>
+              <tbody>
+                {prospects.map((p) => (
+                  <tr
+                    key={p.rank}
+                    className="border-b border-[var(--color-border)]/60 transition-colors last:border-0 hover:bg-white/[0.03]"
+                  >
+                    <td className="px-5 py-4 md:px-6">
+                      <span
+                        className={`grid h-8 w-8 place-items-center rounded-lg text-sm font-bold ${
+                          p.rank <= 3
+                            ? "bg-[var(--color-accent)]/15 text-[var(--color-accent-2)]"
+                            : "text-[var(--color-muted)]"
+                        }`}
+                      >
+                        {p.rank}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 md:px-6">
+                      <div className="flex items-center gap-3">
+                        <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-glow)] text-xs font-bold text-white">
+                          {p.player.slice(0, 2).toUpperCase()}
+                        </span>
+                        <div>
+                          <div className="font-semibold text-[var(--color-text)]">
+                            {p.player}
+                          </div>
+                          <div className="text-xs text-[var(--color-muted)]">
+                            {p.region}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4 text-right font-mono text-sm font-semibold text-[var(--color-text)] md:px-6">
+                      {p.elo.toLocaleString("ru-RU")}
+                    </td>
+                    <td className="px-5 py-4 text-right md:px-6">
+                      <span
+                        className={`inline-flex items-center justify-center rounded-md px-2.5 py-1 text-xs font-bold ${talentStyles[p.talent]}`}
+                      >
+                        {p.talent}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const groups: { title: string; fields: Field[] }[] = [
   {
     title: "Личные данные",
@@ -75,6 +182,8 @@ export default function PlayerForm() {
   };
 
   return (
+    <>
+      <ProspectsTable />
     <section id="players" className="relative overflow-hidden py-20 md:py-28">
       <div className="glow-blue pointer-events-none absolute -top-20 right-0 h-[460px] w-[460px] opacity-50" />
       <div className="relative mx-auto grid max-w-6xl items-start gap-12 px-5 md:px-8 lg:grid-cols-[0.85fr_1.15fr]">
@@ -163,5 +272,6 @@ export default function PlayerForm() {
         </div>
       </div>
     </section>
+    </>
   );
 }
