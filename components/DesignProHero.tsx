@@ -108,10 +108,7 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
       : { label: "Добавить меня в базу", href: "#players" };
 
   const navLinks = role === "scout" ? scoutLinks : playerLinks;
-  const pillCta =
-    role === "scout"
-      ? { label: "Попробовать", href: "#pricing" }
-      : { label: "Заполнить анкету игрока", href: "#players" };
+  const shinyText = role === "scout" ? "чемпионов" : "команды"
 
   return (
     <>
@@ -250,7 +247,7 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
               style={{ animationDelay: "0.25s" }}
             >
               Инновационная платформа для поиска киберспортивной
-              команды - заполни анкету, возглавь рейтинг талантов и ждди
+              команды - заполни анкету, возглавь рейтинг талантов и жди
               приглашение от команды мечты
             </p>
             <p
@@ -279,14 +276,14 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
                 className="rise block text-[1.6rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
                 style={{ animationDelay: "0.5s" }}
               >
-                Находите перспективные
+                Находите {role === "scout" ? "будущих" : "перспективные"}
               </span>
               <span
                 className="rise mt-1.5 block text-[1.6rem] sm:mt-2 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
                 style={{ animationDelay: "0.6s" }}
               >
                 <ShinyText
-                  text="команды."
+                  text={shinyText}
                   baseColor="#64CEFB"
                   shineColor="#ffffff"
                   speed={3}
