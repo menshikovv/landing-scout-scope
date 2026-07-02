@@ -105,7 +105,7 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
   const cta =
     role === "scout"
       ? { label: "Попробовать ScoutScope", href: "#pricing" }
-      : { label: "Добавить меня в базу", href: "#players" };
+      : { label: "Попробовать", href: "#players" };
 
   const navLinks = role === "scout" ? scoutLinks : playerLinks;
   const shinyText = role === "scout" ? "чемпионов" : "команды"
@@ -153,22 +153,25 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
               className="rise hidden items-center rounded-full border border-gray-700 bg-black/30 px-2 py-1 backdrop-blur-md lg:flex"
               style={{ animationDelay: "0.15s" }}
             >
-              {navLinks.map((link) => (
+              {navLinks.length > 0 ? (
+                navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
+                  >
+                    {link.label}
+                  </a>
+                ))
+              ) : (
                 <a
-                  key={link.href}
-                  href={link.href}
-                  className="rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
+                  href={cta.href}
+                  className="flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
                 >
-                  {link.label}
+                  {cta.label}
+                  <ArrowUpRight className="h-4 w-4" />
                 </a>
-              ))}
-              {/* <a
-                href={pillCta.href}
-                className="flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm text-white/80 transition-colors hover:text-white"
-              >
-                {pillCta.label}
-                <ArrowUpRight className="h-4 w-4" />
-              </a> */}
+              )}
             </div>
 
             {/* Mobile hamburger */}
@@ -246,9 +249,9 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
               className="rise max-w-md text-sm text-white/80 md:text-base"
               style={{ animationDelay: "0.25s" }}
             >
-              Инновационная платформа для поиска киберспортивной
-              команды - заполни анкету, возглавь рейтинг талантов и жди
-              приглашение от команды мечты
+              {role === "scout"
+                ? "Автоматизируйте поиск игроков, сравнивайте кандидатов и формируйте собственную базу талантов за минуты вместо дней"
+                : "Инновационная платформа для поиска киберспортивной команды — заполни анкету, возглавь рейтинг талантов и жди приглашение от команды мечты"}
             </p>
             <p
               className="rise text-sm text-white/80 md:text-base lg:text-right"

@@ -54,6 +54,9 @@ const prospects: Prospect[] = [
   { rank: 5, player: "m1raJ", region: "CIS", elo: 2760, talent: "A+" },
   { rank: 6, player: "frostbyte", region: "SA", elo: 2615, talent: "A" },
   { rank: 7, player: "vexPL", region: "EU", elo: 2480, talent: "B+" },
+  { rank: 8, player: "rezQ", region: "NA", elo: 2350, talent: "B+" },
+  { rank: 9, player: "sh1mba", region: "CIS", elo: 2190, talent: "A" },
+  { rank: 10, player: "bl1tZ", region: "EU", elo: 2045, talent: "B+" },
 ];
 
 const talentStyles: Record<Prospect["talent"], string> = {
