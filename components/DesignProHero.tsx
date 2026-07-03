@@ -81,13 +81,13 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [toggleShown, setToggleShown] = useState(false);
 
-  // Header gets a glass background while scrolled; the toggle, once revealed,
-  // stays visible permanently (latched).
+  // Header gets a glass background while scrolled; the toggle appears only
+  // when the hero section (and its toggle) is scrolled out of view.
   useEffect(() => {
     const onScroll = () => {
       const past = window.scrollY > window.innerHeight * 0.3;
       setScrolled(past);
-      if (past) setToggleShown(true);
+      setToggleShown(window.scrollY > window.innerHeight * 0.3);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });

@@ -36,15 +36,16 @@ export default function Landing() {
           <RevealStagger>
             <Pricing />
           </RevealStagger>
-          <RevealStagger>
-            <FAQ />
-          </RevealStagger>
         </>
       ) : (
         <RevealStagger>
           <PlayerForm />
         </RevealStagger>
       )}
+
+      <RevealStagger>
+        <FAQ role={role} />
+      </RevealStagger>
 
       <RevealStagger>
         <Footer />
