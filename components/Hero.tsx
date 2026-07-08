@@ -56,7 +56,7 @@ export default function Hero() {
               style={{ animationDelay: "0.4s" }}
             >
               <a
-                href="#pricing"
+                href="https://atlanttech.pro/#pricing"
                 className="btn-primary inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-white md:text-base"
               >
                 Попробовать ScoutScope

@@ -104,7 +104,7 @@ export default function DesignProHero({ role, onRoleChange }: Props) {
 
   const cta =
     role === "scout"
-      ? { label: "Попробовать ScoutScope", href: "#pricing" }
+      ? { label: "Попробовать ScoutScope", href: "https://atlanttech.pro/#pricing" }
       : { label: "Попробовать", href: "#players" };
 
   const navLinks = role === "scout" ? scoutLinks : playerLinks;

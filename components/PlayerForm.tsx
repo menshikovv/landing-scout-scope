@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Plus } from "./icons";
 
 function Checkbox({
@@ -46,20 +46,22 @@ type Prospect = {
   talent: "S+" | "S" | "A+" | "A" | "B+";
 };
 
-const prospects: Prospect[] = [
-  { rank: 1, player: "aceShot", region: "EU", elo: 3420, talent: "S+" },
-  { rank: 2, player: "n0vaWolf", region: "CIS", elo: 3185, talent: "S" },
-  { rank: 3, player: "Kyrios", region: "NA", elo: 3040, talent: "S" },
-  { rank: 4, player: "zenith", region: "EU", elo: 2890, talent: "A+" },
-  { rank: 5, player: "m1raJ", region: "CIS", elo: 2760, talent: "A+" },
-  { rank: 6, player: "frostbyte", region: "SA", elo: 2615, talent: "A" },
-  { rank: 7, player: "vexPL", region: "EU", elo: 2480, talent: "B+" },
-  { rank: 8, player: "rezQ", region: "NA", elo: 2350, talent: "B+" },
-  { rank: 9, player: "sh1mba", region: "CIS", elo: 2190, talent: "A" },
-  { rank: 10, player: "bl1tZ", region: "EU", elo: 2045, talent: "B+" },
-];
+const API_URL = "http://195.133.50.65:8080/api/v1/public/top-talents";
 
-const talentStyles: Record<Prospect["talent"], string> = {
+type ApiProspect = {
+  nickname?: string;
+  player?: string;
+  region?: string;
+  elo?: number;
+  talent?: string;
+};
+
+type ApiResponse = {
+  data?: ApiProspect[];
+  success?: boolean;
+};
+
+const talentStyles: Record<string, string> = {
   "S+": "bg-[#f59e0b]/15 text-[#fbbf24] ring-1 ring-[#f59e0b]/30",
   S: "bg-[#34d399]/15 text-[#34d399] ring-1 ring-[#34d399]/30",
   "A+": "bg-[#3b6ef6]/15 text-[#6b9bff] ring-1 ring-[#3b6ef6]/30",
@@ -67,7 +69,48 @@ const talentStyles: Record<Prospect["talent"], string> = {
   "B+": "bg-white/8 text-[var(--color-muted)] ring-1 ring-white/10",
 };
 
+function mapProspect(item: ApiProspect, index: number): Prospect {
+  return {
+    rank: index + 1,
+    player: item.nickname ?? item.player ?? "—",
+    region: item.region ?? "—",
+    elo: item.elo ?? 0,
+    talent: (["S+", "S", "A+", "A", "B+"].includes(item.talent ?? "")
+      ? item.talent
+      : "B+") as Prospect["talent"],
+  };
+}
+
 function ProspectsTable() {
+  const [prospects, setProspects] = useState<Prospect[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchTop() {
+      try {
+        setLoading(true);
+        setError(false);
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json: ApiResponse = await res.json();
+        if (cancelled) return;
+        if (json.success && Array.isArray(json.data)) {
+          setProspects(json.data.map(mapProspect));
+        }
+      } catch {
+        if (!cancelled) setError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchTop();
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <section className="relative overflow-hidden pt-20 md:pt-28">
       <div className="relative mx-auto max-w-6xl px-5 md:px-8">
@@ -96,49 +139,65 @@ function ProspectsTable() {
                 </tr>
               </thead>
               <tbody>
-                {prospects.map((p) => (
-                  <tr
-                    key={p.rank}
-                    className="border-b border-[var(--color-border)]/60 transition-colors last:border-0 hover:bg-white/[0.03]"
-                  >
-                    <td className="px-5 py-4 md:px-6">
-                      <span
-                        className={`grid h-8 w-8 place-items-center rounded-lg text-sm font-bold ${
-                          p.rank <= 3
-                            ? "bg-[var(--color-accent)]/15 text-[var(--color-accent-2)]"
-                            : "text-[var(--color-muted)]"
-                        }`}
-                      >
-                        {p.rank}
-                      </span>
-                    </td>
-                    <td className="px-5 py-4 md:px-6">
-                      <div className="flex items-center gap-3">
-                        <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-glow)] text-xs font-bold text-white">
-                          {p.player.slice(0, 2).toUpperCase()}
-                        </span>
-                        <div>
-                          <div className="font-semibold text-[var(--color-text)]">
-                            {p.player}
-                          </div>
-                          <div className="text-xs text-[var(--color-muted)]">
-                            {p.region}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 text-right font-mono text-sm font-semibold text-[var(--color-text)] md:px-6">
-                      {p.elo.toLocaleString("ru-RU")}
-                    </td>
-                    <td className="px-5 py-4 text-right md:px-6">
-                      <span
-                        className={`inline-flex items-center justify-center rounded-md px-2.5 py-1 text-xs font-bold ${talentStyles[p.talent]}`}
-                      >
-                        {p.talent}
-                      </span>
+                {loading ? (
+                  <tr>
+                    <td colSpan={4} className="px-5 py-12 text-center text-sm text-[var(--color-muted)]">
+                      Загрузка данных...
                     </td>
                   </tr>
-                ))}
+                ) : error || prospects.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="px-5 py-12 text-center text-sm text-[var(--color-muted)]">
+                      {error
+                        ? "Не удалось загрузить рейтинг. Попробуйте позже."
+                        : "Пока нет данных."}
+                    </td>
+                  </tr>
+                ) : (
+                  prospects.map((p) => (
+                    <tr
+                      key={p.rank}
+                      className="border-b border-[var(--color-border)]/60 transition-colors last:border-0 hover:bg-white/[0.03]"
+                    >
+                      <td className="px-5 py-4 md:px-6">
+                        <span
+                          className={`grid h-8 w-8 place-items-center rounded-lg text-sm font-bold ${
+                            p.rank <= 3
+                              ? "bg-[var(--color-accent)]/15 text-[var(--color-accent-2)]"
+                              : "text-[var(--color-muted)]"
+                          }`}
+                        >
+                          {p.rank}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4 md:px-6">
+                        <div className="flex items-center gap-3">
+                          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-glow)] text-xs font-bold text-white">
+                            {p.player.slice(0, 2).toUpperCase()}
+                          </span>
+                          <div>
+                            <div className="font-semibold text-[var(--color-text)]">
+                              {p.player}
+                            </div>
+                            <div className="text-xs text-[var(--color-muted)]">
+                              {p.region}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-right font-mono text-sm font-semibold text-[var(--color-text)] md:px-6">
+                        {p.elo.toLocaleString("ru-RU")}
+                      </td>
+                      <td className="px-5 py-4 text-right md:px-6">
+                        <span
+                          className={`inline-flex items-center justify-center rounded-md px-2.5 py-1 text-xs font-bold ${talentStyles[p.talent] ?? talentStyles["B+"]}`}
+                        >
+                          {p.talent}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
