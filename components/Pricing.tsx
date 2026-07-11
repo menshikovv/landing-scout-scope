@@ -109,7 +109,7 @@ export default function Pricing() {
 
               <a
                 href={p.href}
-                className={`mt-7 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold ${
+                className={`relative z-[10000] mt-7 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold ${
                   p.featured
                     ? "btn-primary text-white"
                     : "btn-ghost text-white"
