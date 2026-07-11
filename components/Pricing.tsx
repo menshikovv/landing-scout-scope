@@ -14,6 +14,7 @@ const plans = [
       "До 45 игроков в выдаче по запросу",
     ],
     cta: "Выбрать Basic",
+    href: "https://atlanttech.pro/auth/login?redirect=%2Fdashboard%2Fproducts%3Fproduct%3Dscoutscope-basic%26autoCheckout%3Dtrue",
     featured: false,
   },
   {
@@ -29,6 +30,7 @@ const plans = [
       "До 12 запросов каждые 8 часов",
     ],
     cta: "Выбрать Pro",
+    href: "https://atlanttech.pro/auth/login?redirect=%2Fdashboard%2Fproducts%3Fproduct%3Dscoutscope-pro%26autoCheckout%3Dtrue",
     featured: true,
   },
   {
@@ -44,6 +46,7 @@ const plans = [
       "Расширенные инструменты управления",
     ],
     cta: "Выбрать Manager",
+    href: "https://scoutscope.ru/register",
     featured: false,
   },
 ];
@@ -105,7 +108,7 @@ export default function Pricing() {
               </ul>
 
               <a
-                href="https://scoutscope.ru/register"
+                href={p.href}
                 className={`mt-7 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-sm font-semibold ${
                   p.featured
                     ? "btn-primary text-white"
