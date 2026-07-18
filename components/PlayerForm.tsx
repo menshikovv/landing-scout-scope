@@ -41,43 +41,54 @@ type Field = {
 type Prospect = {
   rank: number;
   player: string;
-  region: string;
+  role: string;
   elo: number;
-  talent: "S+" | "S" | "A+" | "A" | "B+";
+  faceitUrl: string;
+  steamUrl: string;
+  age: number | null;
+  description: string;
 };
 
-const API_URL = "http://195.133.50.65:8080/api/v1/public/top-talents";
+const API_URL = "http://195.133.50.65:8080/api/v1/top-talents";
 
-type ApiProspect = {
-  nickname?: string;
-  player?: string;
-  region?: string;
-  elo?: number;
-  talent?: string;
+type ApiTalent = {
+  user_id?: number;
+  faceit_elo?: number;
+  faceit_url?: string;
+  role?: string;
+  game_nickname?: string;
+  age?: number | null;
+  description?: string;
+  steam_url?: string;
+  moderation_status?: string;
 };
 
 type ApiResponse = {
-  data?: ApiProspect[];
-  success?: boolean;
+  talents?: ApiTalent[];
 };
 
-const talentStyles: Record<string, string> = {
-  "S+": "bg-[#f59e0b]/15 text-[#fbbf24] ring-1 ring-[#f59e0b]/30",
-  S: "bg-[#34d399]/15 text-[#34d399] ring-1 ring-[#34d399]/30",
-  "A+": "bg-[#3b6ef6]/15 text-[#6b9bff] ring-1 ring-[#3b6ef6]/30",
-  A: "bg-[#6b9bff]/12 text-[#6b9bff] ring-1 ring-[#6b9bff]/25",
-  "B+": "bg-white/8 text-[var(--color-muted)] ring-1 ring-white/10",
-};
+const eloStyles: { min: number; label: string; cls: string }[] = [
+  { min: 5000, label: "Elite", cls: "bg-[#f59e0b]/15 text-[#fbbf24] ring-1 ring-[#f59e0b]/30" },
+  { min: 4000, label: "High", cls: "bg-[#34d399]/15 text-[#34d399] ring-1 ring-[#34d399]/30" },
+  { min: 3000, label: "Mid", cls: "bg-[#3b6ef6]/15 text-[#6b9bff] ring-1 ring-[#3b6ef6]/30" },
+  { min: 0, label: "Low", cls: "bg-white/8 text-[var(--color-muted)] ring-1 ring-white/10" },
+];
 
-function mapProspect(item: ApiProspect, index: number): Prospect {
+function getEloStyle(elo: number) {
+  for (const s of eloStyles) if (elo >= s.min) return s;
+  return eloStyles[eloStyles.length - 1];
+}
+
+function mapProspect(item: ApiTalent, index: number): Prospect {
   return {
     rank: index + 1,
-    player: item.nickname ?? item.player ?? "—",
-    region: item.region ?? "—",
-    elo: item.elo ?? 0,
-    talent: (["S+", "S", "A+", "A", "B+"].includes(item.talent ?? "")
-      ? item.talent
-      : "B+") as Prospect["talent"],
+    player: item.game_nickname ?? "—",
+    role: item.role ?? "—",
+    elo: item.faceit_elo ?? 0,
+    faceitUrl: item.faceit_url ?? "#",
+    steamUrl: item.steam_url ?? "",
+    age: item.age ?? null,
+    description: item.description ?? "",
   };
 }
 
@@ -97,8 +108,8 @@ function ProspectsTable() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json: ApiResponse = await res.json();
         if (cancelled) return;
-        if (json.success && Array.isArray(json.data)) {
-          setProspects(json.data.map(mapProspect));
+        if (Array.isArray(json.talents)) {
+          setProspects(json.talents.map(mapProspect));
         }
       } catch {
         if (!cancelled) setError(true);
@@ -134,8 +145,8 @@ function ProspectsTable() {
                 <tr className="border-b border-[var(--color-border)] text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)]">
                   <th className="px-5 py-4 md:px-6">Ранг</th>
                   <th className="px-5 py-4 md:px-6">Игрок</th>
+                  <th className="px-5 py-4 md:px-6">Роль</th>
                   <th className="px-5 py-4 text-right md:px-6">ELO</th>
-                  <th className="px-5 py-4 text-right md:px-6">Уровень таланта</th>
                 </tr>
               </thead>
               <tbody>
@@ -176,24 +187,36 @@ function ProspectsTable() {
                             {p.player.slice(0, 2).toUpperCase()}
                           </span>
                           <div>
-                            <div className="font-semibold text-[var(--color-text)]">
+                            <a
+                              href={p.faceitUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-semibold text-[var(--color-text)] hover:underline"
+                            >
                               {p.player}
-                            </div>
+                            </a>
                             <div className="text-xs text-[var(--color-muted)]">
-                              {p.region}
+                              {p.age ? `${p.age} лет` : ""}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-5 py-4 text-right font-mono text-sm font-semibold text-[var(--color-text)] md:px-6">
-                        {p.elo.toLocaleString("ru-RU")}
+                      <td className="px-5 py-4 md:px-6">
+                        <span className="text-sm text-[var(--color-text)]/80">
+                          {p.role}
+                        </span>
                       </td>
                       <td className="px-5 py-4 text-right md:px-6">
-                        <span
-                          className={`inline-flex items-center justify-center rounded-md px-2.5 py-1 text-xs font-bold ${talentStyles[p.talent] ?? talentStyles["B+"]}`}
-                        >
-                          {p.talent}
-                        </span>
+                        <div className="flex items-center justify-end gap-2">
+                          <span
+                            className={`inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-bold ${getEloStyle(p.elo).cls}`}
+                          >
+                            {getEloStyle(p.elo).label}
+                          </span>
+                          <span className="font-mono text-sm font-semibold text-[var(--color-text)]">
+                            {p.elo.toLocaleString("ru-RU")}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))
