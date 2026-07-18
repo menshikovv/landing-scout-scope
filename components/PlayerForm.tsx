@@ -49,7 +49,7 @@ type Prospect = {
   description: string;
 };
 
-const API_URL = "/api/v1/top-talents";
+const API_URL = "/api/top-talents";
 
 type ApiTalent = {
   user_id?: number;
