@@ -43,24 +43,20 @@ type Prospect = {
   player: string;
   role: string;
   elo: number;
+  avatarUrl: string;
   faceitUrl: string;
-  steamUrl: string;
   age: number | null;
-  description: string;
 };
 
 const API_URL = "/api/top-talents";
 
 type ApiTalent = {
-  user_id?: number;
   faceit_elo?: number;
   faceit_url?: string;
   role?: string;
   game_nickname?: string;
+  avatar_url?: string;
   age?: number | null;
-  description?: string;
-  steam_url?: string;
-  moderation_status?: string;
 };
 
 type ApiResponse = {
@@ -85,10 +81,9 @@ function mapProspect(item: ApiTalent, index: number): Prospect {
     player: item.game_nickname ?? "—",
     role: item.role ?? "—",
     elo: item.faceit_elo ?? 0,
+    avatarUrl: item.avatar_url ?? "",
     faceitUrl: item.faceit_url ?? "#",
-    steamUrl: item.steam_url ?? "",
     age: item.age ?? null,
-    description: item.description ?? "",
   };
 }
 
@@ -183,9 +178,19 @@ function ProspectsTable() {
                       </td>
                       <td className="px-5 py-4 md:px-6">
                         <div className="flex items-center gap-3">
-                          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-glow)] text-xs font-bold text-white">
-                            {p.player.slice(0, 2).toUpperCase()}
-                          </span>
+                          {p.avatarUrl ? (
+                            <img
+                              src={p.avatarUrl}
+                              alt={p.player}
+                              className="h-9 w-9 rounded-full object-cover ring-1 ring-white/10"
+                              loading="lazy"
+                              referrerPolicy="no-referrer"
+                            />
+                          ) : (
+                            <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-glow)] text-xs font-bold text-white">
+                              {p.player.slice(0, 2).toUpperCase()}
+                            </span>
+                          )}
                           <div>
                             <a
                               href={p.faceitUrl}
